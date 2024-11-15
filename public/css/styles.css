@@ -23,7 +23,7 @@ nav{
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 120px;
+  margin-bottom: -10px;
 }
 nav ul{
   display: flex;
@@ -153,4 +153,24 @@ footer{
   text-align: center;
   margin-top: 120px;
   color: #aaa;
+}
+
+/* Flex layout for first name and last name */
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px; /* Adjust spacing if necessary */
+  margin-bottom: 0px;
+}
+
+/* Ensures both firstName and lastName inputs are on the same row */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* DOB field gets its own row */
+.input-group {
+  margin-bottom: -20px; /* Space between fields */
 }

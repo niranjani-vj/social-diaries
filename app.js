@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('G:/Skylet Projects/social_diaries/src/config/db.js');
-
+const authRoutes = require('./src/routes/authRoutes');
 const app = express();
 
 // middleware
 app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(authRoutes);
 
 // view engine
 app.set('view engine', 'ejs');

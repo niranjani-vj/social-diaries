@@ -1,0 +1,72 @@
+<%- include('partials/header'); -%>
+
+<form action="/signup">
+  <h2>Sign up</h2>
+
+  <!-- First Name and Last Name Row -->
+  <div class="row">
+    <div class="input-group">
+      <label for="firstName">First Name</label>
+      <input type="text" name="firstName" id="firstName" required />
+      <div class="firstName error"></div>
+    </div>
+    <div class="input-group">
+      <label for="lastName">Last Name</label>
+      <input type="text" name="lastName" id="lastName" required />
+      <div class="lastName error"></div>
+    </div>
+  </div>
+
+  <!-- DOB Row -->
+  <div class="input-group">
+    <label for="dob">Date of Birth</label>
+    <input type="date" name="dob" id="dob" required />
+    <div class="dob error"></div>
+  </div>
+
+  <!-- Email Row -->
+  <div class="input-group">
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" required />
+    <div class="email error"></div>
+  </div>
+
+  <!-- Password Row -->
+  <div class="input-group">
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" required />
+    <div class="password error"></div>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit">Sign up</button>
+</form>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  const form = document.querySelector('form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // get values
+    const email = form.email.value;
+    const password = form.password.value;
+    const firstName = form.firstName.value;
+    const lastName = form.lastName.value;
+    const dob = form.dob.value;
+
+    console.log(email, password,firstName,lastName,dob);
+    try {
+      const res = await fetch('/signup', { 
+        method: 'POST', 
+        body: JSON.stringify({email,password,firstName,lastName,dob}),
+        headers: {'Content-Type': 'application/json'}
+      });
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+</script>

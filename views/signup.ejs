@@ -1,19 +1,18 @@
 <%- include('partials/header'); -%>
 
 <form action="/signup">
-  <h2>Sign up</h2>
 
   <!-- First Name and Last Name Row -->
   <div class="row">
     <div class="input-group">
       <label for="firstName">First Name</label>
       <input type="text" name="firstName" id="firstName" required />
-      <div class="firstName error"></div>
+      <div class="first-name error"></div>
     </div>
     <div class="input-group">
       <label for="lastName">Last Name</label>
       <input type="text" name="lastName" id="lastName" required />
-      <div class="lastName error"></div>
+      <div class="last-name error"></div>
     </div>
   </div>
 
@@ -46,6 +45,12 @@
 
 <script>
   const form = document.querySelector('form');
+  const emailError = document.querySelector('.email.error');
+  const passwordError = document.querySelector('.password.error');
+  const firstNameError = document.querySelector('.first-name.error');
+  const lastNameError = document.querySelector('.last-name.error');
+  const dobError = document.querySelector('.dob.error');
+
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -64,6 +69,18 @@
         body: JSON.stringify({email,password,firstName,lastName,dob}),
         headers: {'Content-Type': 'application/json'}
       });
+      const data = await res.json();
+      console.log('Data:',data);
+      if (data.errors) {
+        emailError.textContent = data.errors.email;
+        passwordError.textContent = data.errors.password;
+        firstNameError.textContent = data.errors.firstName;
+        lastNameError.textContent = data.errors.lastName;
+        dobError.textContent = data.errors.dob
+      }
+      if (data.user) {
+        location.assign('/');
+      }
     }
     catch (err) {
       console.log(err);

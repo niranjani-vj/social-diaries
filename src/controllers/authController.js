@@ -17,10 +17,7 @@ const handleErrors = (err) => {
 
   // validation errors
   if (err.message.includes('user validation failed')) {
-    // console.log(err);
     Object.values(err.errors).forEach(({ properties }) => {
-      // console.log(val);
-      // console.log(properties);
       errors[properties.path] = properties.message;
     });
   }
@@ -57,7 +54,6 @@ module.exports.signup_post = async (req, res) => {
     res.status(201).json({ user: user._id });
   }
   catch(err) {
-    console.log('ERrorr::');
     const errors = handleErrors(err);
     res.status(400).json({ errors });
   }
@@ -68,5 +64,19 @@ module.exports.login_post = async (req, res) => {
   const { email, password } = req.body;
 
   console.log(email, password);
-  res.send('user login');
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.status(200).json({ user: user._id });
+  } 
+  catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
+}
+
+module.exports.logout_get = (req, res) => {
+  res.cookie('jwt', '', { maxAge: 1 });
+  res.redirect('/');
 }

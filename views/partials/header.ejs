@@ -9,9 +9,14 @@
   <nav>
     <h1><a href="/">Social Diaries</a></h1>
     <ul>
+      <%
+      if(user) { %>
+        <li>Welcome, <%= user.firstName%> <%= user.lastName %></li>
         <li><a href="/logout">Log out</a></li>
+      <% } else { %>
         <li><a href="/login">Log in</a></li>
         <li><a href="/signup" class="btn">Sign up</a></li>
-      </ul>
+      <% } %>
+    </ul>
   </nav>
   

@@ -3,7 +3,7 @@ const authController = require('../controllers/authController');
 const postController = require('../controllers/postController');
 
 
-const {  checkUser } = require('../middleware/authMiddleware.js');
+const { requireAuth, checkUser } = require('../middleware/authMiddleware.js');
 const router = Router();
 
 router
@@ -19,6 +19,6 @@ router
 
 router.get('/logout',authController.logout_get);
 
-router.get('/post', postController.post_get);
+router.get('/post',requireAuth, postController.post_get);
 
 module.exports = router;

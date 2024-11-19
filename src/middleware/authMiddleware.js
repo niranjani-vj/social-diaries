@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const dotenv = require('dotenv');  // Load environment variables
+dotenv.config();
 
 if (!jwt) {
     console.error('JWT is undefined');
@@ -10,7 +12,7 @@ const requireAuth = (req, res, next) => {
 
   // check json web token exists & is verified
   if (token) {
-    jwt.verify(token, 'socialDairiesSecret', (err, decodedToken) => {
+    jwt.verify(token, process.env.secret, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
         res.redirect('/login');
@@ -56,10 +58,9 @@ const requireAuth = (req, res, next) => {
 const checkUser = (req, res, next) => {
   const token = req.cookies.jwt || null;
   res.locals.user = false; // Default value for unauthenticated users
-  console.log('Token:', token);
 
   if (token) {
-      jwt.verify(token, 'socialDairiesSecret', async (err, decodedToken) => {
+      jwt.verify(token, process.env.secret, async (err, decodedToken) => {
           if (err) {
               console.error('JWT verification failed:', err);
           } else {

@@ -39,11 +39,27 @@
 
   <!-- Submit Button -->
   <button type="submit">Sign up</button>
+  <hr>
+  <div id="g_id_onload"
+       data-client_id="624644556164-992gdj27n69k38dmj4o67o3eat4jdm3j.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse">
+  </div>
+
+  <div class="g_id_signin"
+  data-type="standard"
+  data-shape="rectangular"
+  data-theme="outline"
+  data-text="signin_with"
+  data-size="large"
+  data-logo_alignment="left">
+</div>
 </form>
 
 <%- include('partials/footer'); -%>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
+  
   const form = document.querySelector('form');
   const emailError = document.querySelector('.email.error');
   const passwordError = document.querySelector('.password.error');
@@ -86,4 +102,25 @@
       console.log(err);
     }
   });
+
+  async function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      const token = response.credential;
+
+    try {
+      const res = await fetch("/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json();
+      if (data.user) {
+        location.assign('/profile');
+      } else {
+        console.error("Authentication failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 </script>

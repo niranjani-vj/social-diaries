@@ -17,6 +17,7 @@ app.set('view engine', 'ejs');
 
 app.use((req, res, next) => {
   res.locals.user = false; // Default value
+  res.removeHeader("Cross-Origin-Opener-Policy");
   next();
 });
 app.use(checkUser); // Apply the middleware globally

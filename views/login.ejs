@@ -31,6 +31,26 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
+  async function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      const token = response.credential;
+
+    try {
+      const res = await fetch("/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json();
+      if (data.user) {
+        location.assign('/profile');
+      } else {
+        console.error("Authentication failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
   
   const form = document.querySelector('form');
   const emailError = document.querySelector('.email.error');

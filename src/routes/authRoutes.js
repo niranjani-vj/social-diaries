@@ -21,4 +21,6 @@ router.get('/logout',authController.logout_get);
 
 router.get('/post',requireAuth, postController.post_get);
 
+router.post('/auth/google',authController.google_login);
+
 module.exports = router;

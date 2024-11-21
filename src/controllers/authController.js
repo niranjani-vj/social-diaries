@@ -1,6 +1,9 @@
 
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require("google-auth-library");
+const CLIENT_ID = "624644556164-992gdj27n69k38dmj4o67o3eat4jdm3j.apps.googleusercontent.com";
+const client = new OAuth2Client(CLIENT_ID);
 
 const dotenv = require('dotenv');  // Load environment variables
 dotenv.config();
@@ -88,3 +91,53 @@ module.exports.logout_get = (req, res) => {
   res.locals.user = false;
   res.redirect('/');
 }
+
+module.exports.google_login = async (req, res) => {
+  const { token } = req.body;
+ console.log('req.body::',req.body);
+ console.log('tokenn::',token);
+
+  try {
+    // Verify the token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    console.log('payload::',payload);
+    // Extract user information
+    const { sub, email, given_name,family_name, picture } = payload;
+    const password = 'password123'
+    // Check if user exists in the database
+    let user = await User.findOne({ googleId: sub });
+    console.log('user::',user);
+    if (!user) {
+      const user = await User.create({googleId:sub,email: email, password: password, firstName: given_name, lastName:family_name,picture:picture });
+      console.log('Created-user::',user);
+
+      const token = createToken(user._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+      res.status(201).json({ user: user._id });
+      // Create a new user
+      // user = new User({
+      //   googleId: sub,
+      //   email,
+      //   given_name,
+      //   family_name,
+      //   picture,
+      // });
+      // await user.save();
+    } else{
+      const token = createToken(user._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+      res.status(200).json({ user: user._id });
+    }
+
+    // res.status(200).json({ message: "User authenticated", user });
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    res.status(400).json({ error: "Invalid token" });
+  }
+}
+
